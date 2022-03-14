@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .guessValue {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 50px;
+            text-align: center;
+            text-transform: uppercase;
+            height: 75px;
+            width: 75px;
+            border-radius: 2.5px;
+            border: 1px solid indianred;
+            background-color: beige;
+        }
+        
+        .btn {
+            cursor: pointer;
+            height: 80px;
+            padding-left: 20px;
+            padding-right: 20px;
+            border-radius: 5px;
+            background-color: azure;
+            border: 3px solid steelblue;
+            font-size: 50px;
+            color: steelblue;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <script>
+            for(var i = 0; i < 5; i++) {
+                var tempChild = document.createElement("input");
+                tempChild.type = "text";
+                tempChild.className = "guessValue";
+                document.getElementsByTagName("form")[0].appendChild(tempChild);
+            }
+        </script>
+        <input type="button" class="btn" value="SUBMIT"/>
+        <script>
+            document.querySelector(".btn").addEventListener("click", () => {
+                let word = "", url = "http://localhost:8000/wordle?q=";
+                for(var i = 0; i < 5; i++)
+                    word += document.getElementsByClassName("guessValue")[i].value;
+                url += String(word);
+                
+                let options = {
+                    method: "GET",
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    port: process.env.port || 8080
+                };
+
+                fetch(url, options).then(response => response.text()).then(console.log);
+                //alert(keys);
+                /*for(var i = 0; i < 5; i++) {
+                    switch(keys.charAt(i)) {
+                        case 'g':
+                            document.getElementsByClassName("guessValue")[i].style.background = "green";
+                            break;
+                    }
+                }*/
+            });
+        </script>
+    </form>
+</body>

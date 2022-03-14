@@ -1,13 +1,17 @@
 {
     "name": "Moodle+",
     "description": "",
-    "author": "",
+    "author": "Mukund Aggarwal",
     "version": "1.0",
     "manifest_version": 3,
     "content_scripts": [
         {
             "matches": ["https://moodle.iitd.ac.in/login/index.php"],
             "js":["login.js"]
+        },
+        {
+            "matches": ["https://moodle.iitd.ac.in/*"],
+            "js":["style.js"]
         }
     ]
 }
