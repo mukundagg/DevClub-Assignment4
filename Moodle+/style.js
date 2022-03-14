@@ -112,6 +112,12 @@ var ruleSheet = `
         background: linear-gradient(to top, #e2e2e2, #fff) !important;
         box-shadow: 0 0 15px 0 #aaa;
     }
+
+    footer {
+        border-radius: 2.5px;
+        background: linear-gradient(to bottom, #e1e1e1, #fff) !important;
+        background-blend-mode: color;
+    }
 `
 
 var styleElem = document.createElement("style");
