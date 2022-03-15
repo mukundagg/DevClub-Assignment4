@@ -1,12 +1,215 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin&display=swap" rel="stylesheet">
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
 	<title>Covid Charts</title>
+	<style>
+		* {
+			font-family: 'Libre Franklin', sans-serif !important;
+		}
+
+		canvas {
+			margin-top: 20px;
+			flex-wrap: wrap;
+			min-height: 500px;
+		}
+
+		body {
+			align-items: center;
+			display: flex;
+			text-align: center;
+			justify-content: center;
+			flex-flow: column wrap;
+		}
+
+		table {
+			page-break-after: always;
+			text-align: center;
+			margin: 20px;
+			margin-right: 60px;
+			margin-top: 0px;
+			margin-bottom: 0px;
+			border: 2px solid rgba(0, 140, 255, 0);
+			padding: 5px;
+			box-shadow: inset 0 0 50px 0 rgba(0, 140, 255, 1);
+			border-radius: 10px;
+			min-width: 300px;
+		}
+
+
+		table td,
+		tr {
+			overflow: hidden;
+			background-color: azure;
+			border: 2px solid rgb(0, 140, 255);
+			padding: 15px;
+			margin: 10px;
+			font-size: 18px;
+			border-radius: 2.5px;
+			color: rgb(0, 140, 255);
+			overflow: hidden
+		}
+
+		h1 {
+			color: #666;
+		}
+
+		h1:after {
+			content: "";
+			position: absolute;
+			width: 350px;
+			height: 7.5px;
+			background: rgb(2, 0, 36);
+			background: radial-gradient(circle, rgba(2, 0, 36, 1) 0%, rgba(11, 33, 154, 1) 0%, rgba(0, 155, 255, 1) 100%);
+			left: calc(50% - 175px);
+			margin-top: 52.5px;
+			border: 1px solid #fff;
+			border-radius: 100px;
+		}
+
+		.loading {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			height: 100%;
+			width: 100%;
+			background-color: #fff;
+			z-index: 10;
+			display: flex;
+			justify-content: center;
+			vertical-align: middle;
+			align-items: center;
+		}
+
+		.loading img {
+			height: 100px;
+			animation: rotate 1s forwards;
+			animation-timing-function: cubic-bezier(0.25, 0.5, 0.75, 1);
+			animation-iteration-count: infinite;
+		}
+
+		@keyframes rotate {
+			0% {
+				transform: rotate(72deg);
+			}
+
+			25% {
+				transform: rotate(144deg);
+			}
+
+			50% {
+				transform: rotate(216deg);
+			}
+
+			75% {
+				transform: rotate(288deg);
+			}
+
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+
+		select {
+			height: 40px;
+			border-radius: 5px;
+			margin-top: 15px;
+			max-width: 150px;
+			font-size: 16px;
+			text-align: center;
+			background-color: rgba(255, 255, 255, .6);
+		}
+
+		footer {
+			margin-top: 17.5px;
+			padding-top: 15px;
+			font-size: 16px;
+			color: #aaa;
+		}
+	</style>
 </head>
+
 <body>
+	<div class="loading">
+		<img src="loading.png" alt="Loading">
+	</div>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@3/dist/chart.min.js"></script>
 	<script src="script.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+		integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+	<h1>COVID Data Overview</h1><br />
+
+	<span style="display: flex; flex-flow: row wrap; justify-content: center; align-items: center;">
+		<div id="data-summary">
+			<table style="box-shadow: none; background-color: inherit; min-width: 350px">
+				<tr
+					style="display: flex; border-radius: 5px; border: 2px solid rgba(30, 144, 255, .3); padding: 0px; text-align: center;">
+					<td style="width: 100%; padding: 12.5px; font-family: 12px; border: none; color: #555;">
+						<label for="cars">Choose country - </label>
+						<br />
+						<select name="countries" id="countriesList" onchange="getNewCountryVal()">
+							<option value="India">India</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<table style="max-width: 400px;">
+				<tr>
+					<td
+						style="background: rgb(2,0,36); background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(11,83,254, 1) 0%, rgba(0,155,255,.8) 100%); color: #fff;">
+						Total Confirmed<br /> Global-Cases</td>
+					<td class="gdisp"></td>
+				</tr>
+				<tr>
+					<td style="background: rgb(2,0,36); background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(11,83,254, 1) 0%, rgba(0,155,255,.8) 100%); color: #fff;"
+						id="ttlCnt">Total Confirmed
+					</td>
+					<td class="gdisp"></td>
+				</tr>
+			</table>
+			</table>
+			<table style="box-shadow: none; background-color: inherit; min-width: 350px">
+				<tr style="display: flex; border: 2px solid rgba(30, 144, 255, .3); padding: 0px; text-align: center;">
+					<td style="width: 100%; padding: 2.5px; border: none; color: #999;">(data as of
+						<script>var dt = new Date(); document.write(dt.getDate() + "/" + (parseInt(dt.getUTCMonth()) + 1) + "/" + dt.getFullYear())</script>
+						)
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div>
+			<canvas id="myChart"></canvas>
+		</div>
+		<script>
+			const labels = [], months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var lastDayPrevMonth = new Date(), start = new Date().getDate() - 30;
+			lastDayPrevMonth.setDate(0);
+
+			if (start <= 0) {
+				for (var i = lastDayPrevMonth.getDate() + start; i <= lastDayPrevMonth.getDate(); i++)
+					labels.push("" + i + " " + months[lastDayPrevMonth.getMonth()]);
+				start = 1;
+			}
+			for (var i = start; i <= new Date().getDate(); i++)
+				labels.push(i + " " + months[new Date().getMonth()]);
+
+			labels.pop();
+
+			getCountryValues();
+		</script>
+	</span>
+	<footer>
+		<hr />
+		&copy; All Rights Reserved. Data taken from John Hopkins University API; Errors are regretted without liability.
+	</footer>
 </body>
+
 </html>

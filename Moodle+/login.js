@@ -40,6 +40,6 @@ captcha_input_element.value = answer;
 // BONUS
 
 const username = document.querySelector("#username"), password = document.querySelector("#password");
-username.value = "MT6210939";
-password.value = "9f26957f";
+username.value = "";
+password.value = "";
 document.querySelector("#loginbtn").click();
