@@ -37,19 +37,21 @@ function compareSecret(x) {
 }
 
 function myFunction(req, res) { // request, response
-	//console.log({req}); // You can uncomment this to see the request object
-	console.log(req.url);
+	var fullURL = req.url, stringFullURL = String(fullURL); 
 
-	//var PATH = url.parse(req.url, true), PATHNAME = PATH.pathname;
+	//console.log({req}); // You can uncomment this to see the request object
+	console.log(fullURL);
+
+	//var PATH = url.parse(fullURL, true), PATHNAME = PATH.pathname;
 
 	if(count == 0) {
 		generateSECRET();
 	}
 
-	switch (String(req.url)) {
+	switch (stringFullURL) {
 		case '/index.html':
 			// 200 implies response success & 404 implies response failure
-			fs.readFile(__dirname + PATHNAME, (error, data) => {
+			fs.readFile(__dirname + stringFullURL, (error, data) => {
 				if (error) {
 					res.writeHead(404);
 					res.write(error);
@@ -80,10 +82,10 @@ function myFunction(req, res) { // request, response
 			} else {
 				++count;
 				const getQuery = () => {
-					var x = String(req.url);
+					var x = String(fullURL);
 					if(!x.includes("wordle"))
 						return x;
-					x  = x.substring(10, String(req.url).length);
+					x  = x.substring(10, String(fullURL).length);
 					// /wordle?q= is of length 10 so index 9 is the last char and we must take substring from index 10
 					return x;
 				};
