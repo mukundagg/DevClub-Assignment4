@@ -37,16 +37,16 @@ function compareSecret(x) {
 }
 
 function myFunction(req, res) { // request, response
-	// console.log({req}); // You can uncomment this to see the request object
+	//console.log({req}); // You can uncomment this to see the request object
 	console.log(req.url);
 
-	var PATH = url.parse(req.url, true), PATHNAME = PATH.pathname;
+	//var PATH = url.parse(req.url, true), PATHNAME = PATH.pathname;
 
 	if(count == 0) {
 		generateSECRET();
 	}
 
-	switch (PATHNAME) {
+	switch (String(req.url)) {
 		case '/index.html':
 			// 200 implies response success & 404 implies response failure
 			fs.readFile(__dirname + PATHNAME, (error, data) => {
@@ -79,7 +79,15 @@ function myFunction(req, res) { // request, response
 				res.end();
 			} else {
 				++count;
-				const GUESS = String(url.parse(req.url, true).query["q"]); // Write logic to parse the word which the user guessed from the URL string
+				const getQuery = () => {
+					var x = String(req.url);
+					if(!x.includes("wordle"))
+						return x;
+					x  = x.substring(10, String(req.url).length);
+					// /wordle?q= is of length 10 so index 9 is the last char and we must take substring from index 10
+					return x;
+				};
+				const GUESS = getQuery(); // Write logic to parse the word which the user guessed from the URL string
 				let feedback = compareSecret(GUESS); // Write logic to compare the word with the secret, and generate the feedback string
 				res.write(feedback);
 				console.log(feedback + " " + SECRET);
@@ -89,4 +97,4 @@ function myFunction(req, res) { // request, response
 	}
 }
 
-http.createServer(myFunction).listen(8080);
+http.createServer(myFunction).listen(process.env.PORT || 5000);
