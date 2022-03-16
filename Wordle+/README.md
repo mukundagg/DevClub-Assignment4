@@ -1,3 +1,13 @@
+# Heroku App
+See https://wordle-mukund.herokuapp.com/index.html
+
+# Request & Response from Node.js
+
+Request -- ![image](https://user-images.githubusercontent.com/15856849/158583895-c4963bdd-e2bd-47ae-bf66-17b9e879927a.png)
+
+Response -- ![image](https://user-images.githubusercontent.com/15856849/158584222-ed8f932d-9d91-4c02-8c3a-df1307cfd8d3.png)
+
+
 # Wordle+
 Check out [Wordle](https://www.nytimes.com/games/wordle/index.html). It is a game where the computer has fixed a 5 letter word, let's call that the `SECRET`, and the user has to guess that word. Let's say the user makes a guess, then the computer gives a feedback for each letter in the guess: 
 * Green if that letter is in the same position in the `SECRET`
