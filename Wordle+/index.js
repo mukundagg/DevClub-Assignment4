@@ -1,5 +1,4 @@
 const http = require("http");
-const url = require('url');
 const fs = require('fs');
 
 let SECRET = "", words = [], count = 0; // You can set any word as the secret answer
