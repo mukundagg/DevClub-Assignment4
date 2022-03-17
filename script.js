@@ -21,6 +21,7 @@ function getParsed30Data(x) {
 }
 
 function getNewCountryVal() {
+    $(".loading").fadeIn("fast", "linear");
     countryFullNm = document.getElementById("countriesList").value;
     getParsed30Data(countryFullNm);
 
@@ -32,14 +33,13 @@ function getNewCountryVal() {
     last30DaysArr = [];
 
     getCountryValues();
+    getChartData();
 }
 
 const getCountryValues = async () => {
     const val = await parsedData;
-    getParsed30Data(countryFullNm);
-    const vls = await parse30DaysIndia;
-
     allCountriesData = val.Countries;
+
     const getData = () => {
         for (var i = 0; i < allCountriesData.length; i++) {
             if (allCountriesData[i]['Country'] == countryFullNm) {
@@ -58,11 +58,16 @@ const getCountryValues = async () => {
     gDsip[0].textContent = " " + parseInt(val.Global.TotalConfirmed).toLocaleString();
     gDsip[1].textContent = " " + parseInt(indiaCases.TotalConfirmed).toLocaleString();
     document.getElementById("ttlCnt").innerHTML = "Total Confirmed <br /> Cases in " + String(countryFullNm);
+}
+
+const getChartData = async () => {
+    getParsed30Data(countryFullNm);
+    const vls = await parse30DaysIndia;
 
     for (var i = vls.length - 1; i > vls.length - 31; i--) {
         last30DaysArr.push(vls[i].Active);
     }
-    dt = last30DaysArr;
+    //dt = last30DaysArr;
 
     // Only after fetching draw the chart
     const data = {
@@ -115,7 +120,7 @@ const getCountryValues = async () => {
             }
         }
     };
-    const myChart = new Chart($('#myChart'), config);
-    $(".loading").fadeOut("slow", "linear");
-}
 
+    const myChart = new Chart($('#myChart'), config);
+    $(".loading").fadeOut("fast", "linear");
+}
