@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&family=Work+Sans&display=swap"
+        rel="stylesheet">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <title>Wordle+</title>
+    <style>
+        body {
+            text-align: left;
+        }
+
+        form {
+            margin-left: 25px;
+            max-width: 50%;
+            text-align: left;
+        }
+
+        .guessValue2 {
+            width: 40px;
+            height: 40px;
+            font-size: 22px;
+            font-family: 'Work Sans', sans-serif;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .guessValue {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 45px;
+            text-align: center;
+            text-transform: uppercase;
+            height: 65px;
+            width: 65px;
+            border-radius: 2.5px;
+            border: 1px solid indianred;
+            background-color: beige;
+        }
+
+        input[type ^="button"] {
+            cursor: pointer;
+            height: 60px;
+            width: 175px;
+            padding-left: 20px;
+            padding-right: 20px;
+            border-radius: 5px;
+            background-color: azure;
+            border: 3px solid steelblue;
+            font-size: 30px;
+            color: steelblue;
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        @keyframes focusanim {
+            0%  {
+                filter: blur(2px);
+            }
+
+            50% {
+                filter: blur(1px);
+            }
+
+            100% {
+                filter: blur(0px)
+            }
+        }
+
+        input[type ^="button"]:focus {
+            animation: focusanim 0.1s ease-in;
+        }
+
+        #guesses {
+            text-align: left;
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        #guesses h1 {
+            margin-top: 30px;
+            margin-bottom: 0px;
+            text-align: left;
+            color: #666;
+            font-size: 28px;
+        }
+
+        #guesses li {
+            font-size: 28px;
+            text-transform: uppercase;
+        }
+
+        #SuccessMessage {
+            font-family: 'Work Sans', sans-serif;
+            border-radius: 10px;
+            font-size: 25px;
+            padding: 0px;
+            text-align: center;
+            color: #fff;
+        }
+
+        #keysListAll {
+            margin-top: 0px;
+            margin-right: 25px;
+            border: 1px solid rgb(247, 255, 255);
+            background: linear-gradient(to top, azure, rgb(247, 255, 255));
+            border-radius: 25px;
+            float: right;
+            padding: 20px;
+            max-width: 40%;
+            text-align: center;
+        }
+
+        #keysListAll h2 {
+            font-size: 24px;
+            font-family: 'Oswald', sans-serif;
+            color: #666;
+        }
+
+        #keysListAll .keyValsList {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 24px;
+            line-height: 40px;
+            padding: 10px;
+            margin: 10px;
+            height: 40px;
+            width: 40px;
+            border: 3px solid steelblue;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        #instructions {
+            margin: 0px;
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            height: 50px;
+            border: 1px solid dodgerblue;
+            padding: 2.5px 10px 2.5px 10px;
+            border-radius: 10px;
+        }
+
+        #instructions:hover {
+            background-color: azure;
+            cursor: pointer;
+        }
+
+        #instructions h1,
+        #instructionText h1 {
+            line-height: 45px;
+            margin: 0px;
+            font-size: 25px;
+            font-family: 'Oswald', sans-serif;
+            color: dodgerblue;
+            text-transform: uppercase;
+        }
+
+        #instructionText {
+            visibility: hidden;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            height: 100%;
+            width: 100%;
+            background-color: rgba(255, 255, 255, .9);
+            color: #777;
+            font-family: 'Work Sans';
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-flow: column wrap;
+            font-size: 22px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="instructions">
+        <h1>Instructions</h1>
+        <script>
+            document.querySelector("#instructions").addEventListener("click", () => {
+                document.querySelector("#instructionText").style.visibility = "visible";
+            });
+        </script>
+    </div>
+    <div id="instructionText">
+        <h1 style="font-size: 32px;">INSTRUCTIONS</h1>
+        <ol>
+            <li>You have 6 tries to guess the 5-letter word</li>
+            <li>Your guesses should be meaningful and there<br /> should not be any blanks</li>
+            <li>Press SUBMIT to see whether you have guessed correctly<br /> or not, and press CLEAR to guess again</li>
+            <li>The Keys List shows how many alphabets you have<br /> guessed correctly. You can also see your previous
+                attempts.</li>
+            <li>The legend for the tiles is -
+                <table>
+                    <tr>
+                        <td style="background-color: lightgreen; width: 30px; height: 30px; border-radius: 100px;"></td>
+                        <td>&nbsp;&nbsp;- Correctly guessed letter in same position in original word</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: yellow; width: 30px; height: 30px; border-radius: 100px;"></td>
+                        <td>&nbsp;&nbsp;- Correctly guessed letter, but in different position in word</td>
+                    </tr>
+                    <tr>
+                        <td
+                            style="background-color: rgba(209, 208, 208, .5); width: 30px; height: 30px; border-radius: 100px;">
+                        </td>
+                        <td>&nbsp;&nbsp;- Letter is not present in the word</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: red; width: 30px; height: 30px; border-radius: 100px;"></td>
+                        <td>&nbsp;&nbsp;- Word is without meaning / spelling error</td>
+                    </tr>
+                </table>
+            </li>
+        </ol>
+        <script>
+            document.querySelector("#instructionText").addEventListener("click", () => {
+                document.querySelector("#instructionText").style.visibility = "hidden";
+            });
+        </script>
+    </div>
+    <h1
+        style=" margin: 0px; margin-left: 25px ; font-size: 55px; text-decoration: underline; font-family:'Oswald', sans-serif;">
+        Wordle+</h1>
+    <p
+        style="margin-left: 25px; color: #999; margin-bottom: 0px; margin-top: 10px; font-size: 24px; font-family: 'Oswald', sans-serif;">
+        Press TAB to jump to the next letter box</p>
+    <h3 id="SuccessMessage"></h3>
+    <div id="keysListAll">
+        <h2>KEYS LIST</h2>
+    </div>
+    <form>
+        <script>
+            for (var i = 65; i <= 90; i++) {
+                var tempChild = document.createElement("span");
+                tempChild.innerHTML = String.fromCharCode(i);
+                tempChild.className = "keyValsList";
+                document.querySelector("#keysListAll").append(tempChild);
+            }
+
+            for (var i = 0; i < 5; i++) {
+                var tempChild = document.createElement("input");
+                tempChild.type = "text";
+                tempChild.className = "guessValue";
+                tempChild.maxLength = "1";
+                document.getElementsByTagName("form")[0].appendChild(tempChild);
+            }
+
+
+            // Improve ease-of-use for input
+            var cntr = 0;
+            for(var i = 0; i < 5; i++) {
+                document.getElementsByClassName("guessValue")[i].addEventListener("input", (e) => {
+                    console.log(++cntr);
+                    if(!(cntr == 5))
+                        document.getElementsByClassName("guessValue")[cntr].focus();
+                    else {
+                        document.getElementsByClassName("guessValue")[0].focus();
+                        cntr = 0;
+                    }
+                });
+            }
+
+            var clr = false;
+            document.getElementsByTagName("form")[0].addEventListener("keydown", (event) => {
+                if(event.key == "Backspace" && cntr != 0) {
+                    --cntr;
+                    document.getElementsByClassName("guessValue")[cntr].focus();
+                }
+                if(event.key == "Enter") {
+                    if(clr) {
+                        document.getElementsByClassName("clear")[0].click();
+                        clr = !clr;
+                        return;
+                    }
+                    document.getElementsByClassName("btn")[0].click();
+                    clr = !clr;
+                }
+            });
+        </script>
+        <br /><br />
+        <input type="button" class="btn" value="SUBMIT" />
+        <input type="button" class="clear" value="CLEAR" />
+        <br />
+        <div id="guesses">
+            <h1 style="font-family:'Oswald', sans-serif;">ATTEMPTS</h1>
+            <ol id="guessList">
+            </ol>
+        </div>
+        <script>
+            let valz = "", tries = [];
+            for (var i = 0; i < 6; i++) {
+                var elem = document.createElement("li");
+                elem.className = "guessListTags";
+                document.querySelector("#guessList").append(elem);
+            }
+            document.querySelector(".clear").addEventListener("click", () => {
+                var clrInp = () => {
+                    for (var i = 0; i < 5; i++) {
+                        document.getElementsByClassName("guessValue")[i].value = "";
+                        document.getElementsByClassName("guessValue")[i].style.background = "beige";
+                    }
+                };
+                if (valz == "rrrrr") {
+                    alert('Please enter a 5 letter word with meaning!')
+                    clrInp();
+                    return;
+                }
+                for (var i = 0; i < 5; i++) {
+                    var tempChild = document.createElement("input");
+                    tempChild.type = "text";
+                    tempChild.className = "guessValue2";
+                    tempChild.value = document.getElementsByClassName("guessValue")[i].value;
+                    tempChild.style.background = document.getElementsByClassName("guessValue")[i].style.background;
+                    tempChild.readOnly = true;
+                    document.getElementsByClassName("guessListTags")[tries.length - 1].append(tempChild);
+                }
+                clrInp();
+            });
+
+
+            document.querySelector(".btn").addEventListener("click", () => {
+                const checkCorrect = () => {
+                    if (valz == "ggggg") {
+                        document.querySelector("#SuccessMessage").innerHTML = "Success!  You have correctly guessed the word! Reload the page to again challenge Wordle!";
+                        document.querySelector("#SuccessMessage").style.background = "dodgerblue";
+                        document.querySelector("#SuccessMessage").style.padding = "15px";
+                        fetch(base + "/newkeygen").catch(console.error);
+                        tries = [];
+                        valz = "";
+                        return;
+                    }
+                }
+
+                let word = "", base = String(document.location.origin), url = base + "/wordle?q=";
+                for (var i = 0; i < 5; i++) {
+                    if (document.getElementsByClassName("guessValue")[i].value == "") {
+                        return;
+                    }
+                    word += document.getElementsByClassName("guessValue")[i].value;
+                }
+                url += String(word);
+
+                var keys = fetch(url).then(r => r.text()).catch(console.error);
+                const getVals = async () => {
+                    if (tries.length > 4) {
+                        checkCorrect();
+                        var ans = fetch(base + "/getsecret").then(r => r.text()).catch(console.error);
+                        soln = await ans;
+                        document.querySelector("#SuccessMessage").innerHTML = "The answer is " + soln + ". Better luck next time! Reload the page to try again!";
+                        document.querySelector("#SuccessMessage").style.background = "orange";
+                        document.querySelector("#SuccessMessage").style.padding = "15px";
+                        tries = [];
+                        valz = "";
+                    }
+                    valz = await keys;
+                    for (var i = 0; i < 5; i++) {
+                        var currentLetterRef = document.getElementsByClassName("guessValue")[i];
+                        switch (valz.charAt(i)) {
+                            case 'g':
+                                currentLetterRef.style.background = "lightgreen";
+                                break;
+                            case 'y':
+                                currentLetterRef.style.background = "yellow";
+                                break;
+                            case 'b':
+                                currentLetterRef.style.background = "rgba(209, 208, 208, .5)";
+                                break;
+                            case 'r':
+                                currentLetterRef.style.background = "red";
+                                break;
+                        }
+
+                        if(!(document.getElementsByClassName("guessValue")[i].style.background == "red"))
+                            document.getElementsByClassName("keyValsList")[String(currentLetterRef.value).toUpperCase().charCodeAt(0) - 65].style.background = document.getElementsByClassName("guessValue")[i].style.background;
+                    }
+                    checkCorrect();
+                    if (valz != "rrrrr")
+                        tries.push(word);
+                };
+                getVals();
+            });
+        </script>
+    </form>
+</body>
